@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  # Servicio de Base de Datos (MariaDB 10.11)
+  db:
+    image: mariadb:10.11
+    container_name: prueba_gf_db
+    restart: always
+    environment:
+      MARIADB_DATABASE: ${DB_DATABASE:-PruebaGF}
+      MARIADB_ROOT_PASSWORD: ${DB_PASSWORD:-}
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "yes"
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app-network
+
+  # Servicio Backend (Laravel 12 API)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: prueba_gf_backend
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE:-PruebaGF}
+      DB_USERNAME: root
+      DB_PASSWORD: ${DB_PASSWORD:-}
+      SESSION_DRIVER: file
+    volumes:
+      - ./backend:/var/www/html
+      - /var/www/html/vendor
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  # Servicio Queue Worker para procesar colas de forma asíncrona
+  backend-queue:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: prueba_gf_queue
+    restart: always
+    command: php artisan queue:listen --tries=1
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE:-PruebaGF}
+      DB_USERNAME: root
+      DB_PASSWORD: ${DB_PASSWORD:-}
+    volumes:
+      - ./backend:/var/www/html
+      - /var/www/html/vendor
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  # Servicio Frontend (React + Vite)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: prueba_gf_frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+volumes:
+  db_data:
+
+networks:
+  app-network:
+    driver: bridge

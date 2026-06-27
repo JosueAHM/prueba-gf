@@ -18,8 +18,17 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'identificacion' => '0402199300001',
+            'username' => 'JhonDoe',
+            'apellidos' => 'Doe',
+            'nombres' => 'Jhon',
+            'fecha_nacimiento' => '1993-02-04',
+            'celular' => '89017676',
+            'telefono' => null,
+            'correo_personal' => 'jhondoe@gmail.com',
+            'estado_civil' => 'Soltero',
+            'sexo' => 'Masculino',
+            'direccion' => 'Res. Los heroes, block 18, casa 3',
         ]);
     }
 }

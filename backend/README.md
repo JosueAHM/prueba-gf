@@ -1,59 +1,80 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Backend - Prueba GF (Laravel 12)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Este directorio contiene el backend y la API de la aplicación **Prueba GF**, desarrollada con el framework **Laravel 12** y **PHP 8.2+**.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Tecnologías y Características principales
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Laravel 12**: Framework PHP de última generación.
+- **Base de datos**: Soporte listo para MySQL (configurada para el puerto `3307` por defecto).
+- **Vite & TailwindCSS v4**: Integrado para el manejo y compilación de recursos internos del backend si fuesen necesarios.
+- **Soporte de Colas (Queue)**: Configurado mediante base de datos para procesamiento asíncrono.
+- **Laravel Pail**: Herramienta de visualización interactiva de logs integrada en la consola de desarrollo.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Configuración y Configuración Inicial
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Para configurar este backend de manera local:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1.  Asegúrate de estar en el directorio `backend/`:
+    ```bash
+    cd backend
+    ```
+2.  Crea un archivo de configuración `.env` copiando el ejemplo:
+    ```bash
+    cp .env.example .env
+    ```
+3.  Revisa y edita las credenciales de la base de datos en tu `.env` si es necesario:
+    ```env
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3307
+    DB_DATABASE=PruebaGF
+    DB_USERNAME=root
+    DB_PASSWORD=tu_contraseña
+    ```
+4.  Ejecuta el comando automatizado de instalación y migración de base de datos:
+    ```bash
+    composer run setup
+    ```
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Comandos de Desarrollo
 
-### Premium Partners
+En esta aplicación se han definido varios scripts rápidos en `composer.json` para facilitar el flujo de desarrollo:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 1. Iniciar Entorno Completo en Paralelo
 
-## Contributing
+Para no tener que abrir múltiples terminales, ejecuta:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+composer run dev
+```
 
-## Code of Conduct
+Este comando utiliza `concurrently` para lanzar los siguientes procesos a la vez:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- **Laravel Development Server**: Servidor HTTP en `http://localhost:8000`.
+- **Queue Listener**: Escucha y procesamiento de trabajos en segundo plano (`database` driver).
+- **Laravel Pail**: Visualización instantánea de registros y errores en la consola.
+- **Vite Dev Server**: Compilación rápida y HMR para recursos frontend del backend.
 
-## Security Vulnerabilities
+### 2. Ejecutar Pruebas Unitarias / Funcionales
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Para ejecutar la suite de pruebas mediante PHPUnit:
 
-## License
+```bash
+composer run test
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## Directorios Clave
+
+- **`app/Models/`**: Modelos Eloquent de la base de datos (por ejemplo, [User.php](file:///d:/Dev/Proyectos/test/prueba-gf/backend/app/Models/User.php)).
+- **`app/Http/Controllers/`**: Controladores HTTP para manejar las peticiones.
+- **`routes/`**: Rutas de la aplicación web y consola (ej. [web.php](file:///d:/Dev/Proyectos/test/prueba-gf/backend/routes/web.php)).
+- **`database/migrations/`**: Esquema e historial de base de datos en archivos PHP.
+- **`config/`**: Todos los archivos de configuración del framework.

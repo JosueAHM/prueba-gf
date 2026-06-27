@@ -1,0 +1,7 @@
+vendor
+.env
+.git
+.github
+storage/logs/*
+node_modules
+docker-compose*
