@@ -8,19 +8,26 @@ Este es el repositorio principal para el proyecto **Prueba GF**. El proyecto est
 
 El repositorio se divide en dos directorios principales:
 
-*   **[`backend/`](file:///d:/Dev/Proyectos/test/prueba-gf/backend)**: API REST y lógica de negocio desarrollada con **Laravel 12** y **PHP 8.2+**. Utiliza **MySQL** como base de datos.
-*   **[`frontend/`](file:///d:/Dev/Proyectos/test/prueba-gf/frontend)**: Aplicación de cliente SPA (Single Page Application) desarrollada con **React 19** y compilada usando **Vite**.
+*   **[`backend/`](backend/)**: API REST y lógica de negocio desarrollada con **Laravel 12** y **PHP 8.2+**. Utiliza **MySQL** como base de datos.
+*   **[`frontend/`](frontend/)**: Aplicación de cliente SPA (Single Page Application) desarrollada con **React 19** y compilada usando **Vite**.
+
+Adicionalmente, se incluye un archivo de configuración **[`docker-compose.yml`](docker-compose.yml)** en la raíz para la contenedorización de servicios, el progreso/contexto UI en **[`CONTEXT.md`](CONTEXT.md)**, y un archivo de contexto de agentes de IA en **[`Agents.md`](Agents.md)**.
 
 ---
 
-## 🛠️ Requisitos Previos
+## 🛠️ Tecnologías Utilizadas
 
-Antes de comenzar, asegúrate de tener instalado lo siguiente en tu entorno local:
+### Backend
+- **Laravel 12** (PHP 8.2+)
+- **Base de Datos**: MySQL (Puerto configurado en 3307)
+- **Soporte asíncrono**: Cola de procesos configurada (`queue:listen`)
+- **Herramientas de dev**: Laravel Pail (logs), Pint, Vite
 
-*   **PHP 8.2** o superior
-*   **Composer** (gestor de dependencias de PHP)
-*   **Node.js** (v18.0.0 o superior) y **npm**
-*   **Servidor MySQL** (en funcionamiento en el puerto `3307` o el configurado en el archivo `.env`) o un contenedor **Docker** para la base de datos.
+### Frontend
+- **React 19** con Vite
+- **Material UI (MUI)**: Sistema de diseño y componentes (`Grid`, `Dialog`, `TextField`, etc.)
+- **Tema personalizado**: Fuente 'Outfit', bordes redondeados (16px) y colores primarios azul/púrpura.
+- **Gestión de peticiones**: Axios para conectar con la API REST.
 
 ---
 
@@ -76,9 +83,41 @@ El backend de Laravel cuenta con comandos automatizados para facilitar la config
 
 ---
 
-## 💻 Ejecución en Desarrollo
+## 🐳 Ejecución con Docker (Alternativa Recomendada)
 
-Para trabajar en el proyecto localmente, debes iniciar ambos servidores de desarrollo:
+Si prefieres no instalar dependencias localmente (PHP, Node.js, MySQL), el proyecto incluye una configuración completa y lista para usar con **Docker** y **Docker Compose**.
+
+1.  Asegúrate de tener Docker instalado y ejecutándose en tu sistema.
+2.  (Recomendado) Crea el archivo `.env` del backend para tener las claves de aplicación listas:
+    ```bash
+    cp backend/.env.example backend/.env
+    ```
+3.  Desde la raíz del proyecto, construye y levanta todos los contenedores en segundo plano:
+    ```bash
+    docker-compose up -d --build
+    ```
+4.  Genera la clave de aplicación y ejecuta las migraciones de la base de datos dentro del contenedor:
+    ```bash
+    docker-compose exec backend php artisan key:generate
+    docker-compose exec backend php artisan migrate --force
+    ```
+
+**Servicios disponibles:**
+*   **Frontend (React)**: `http://localhost:5173`
+*   **Backend (Laravel API)**: `http://localhost:8000`
+*   **Base de Datos (MariaDB)**: Mapeada al puerto local `3307`
+*   **Queue Worker**: Procesando colas en segundo plano de forma automática.
+
+Para detener los contenedores en cualquier momento, ejecuta:
+```bash
+docker-compose down
+```
+
+---
+
+## 💻 Ejecución Local (Sin Docker)
+
+Si no usas Docker y prefieres trabajar en el proyecto directamente en tu entorno local, debes iniciar ambos servidores de desarrollo:
 
 ### Ejecutar el Backend (Laravel)
 
@@ -102,7 +141,7 @@ La aplicación web estará disponible en la URL indicada por la consola (normalm
 
 ---
 
-## 📝 Scripts Disponibles
+## 📝 Scripts Disponibles y Comandos Útiles
 
 ### Backend (`/backend`)
 *   `composer run setup`: Instalación y configuración inicial completa.
@@ -114,3 +153,11 @@ La aplicación web estará disponible en la URL indicada por la consola (normalm
 *   `npm run build`: Compila la aplicación de React para producción en la carpeta `dist`.
 *   `npm run lint`: Ejecuta el analizador de código ESLint para comprobar el estilo y errores en el código de React.
 *   `npm run preview`: Previsualiza localmente la compilación de producción.
+
+---
+
+## 🔄 Estado Actual del Proyecto (Últimas Actualizaciones)
+- Se ha refactorizado visualmente el frontend adoptando por completo **Material UI (MUI)**.
+- El formulario de usuarios (`UserFormDialog.jsx`) ha sido actualizado a un sistema de rejilla (Grid) que permite mostrar dos columnas en escritorio y se adapta correctamente a dispositivos móviles.
+- Se configuró la visualización de notificaciones de éxito y error mediante Toast (`Snackbar` de MUI) para un mejor feedback al usuario en las operaciones del CRUD.
+- Implementación de un diálogo de confirmación de eliminación (`DeleteConfirmDialog.jsx`) y tabla con diseño moderno y funcional.
