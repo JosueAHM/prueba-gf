@@ -4,17 +4,17 @@ Este directorio contiene el backend y la API de la aplicación **Prueba GF**, de
 
 ---
 
-## 🛠️ Tecnologías y Características principales
+## Tecnologías y Características principales
 
-*   **Laravel 12**: Framework PHP de última generación.
-*   **Base de datos**: Soporte listo para MySQL (configurada para el puerto `3307` por defecto).
-*   **Vite & TailwindCSS v4**: Integrado para el manejo y compilación de recursos internos del backend si fuesen necesarios.
-*   **Soporte de Colas (Queue)**: Configurado mediante base de datos para procesamiento asíncrono.
-*   **Laravel Pail**: Herramienta de visualización interactiva de logs integrada en la consola de desarrollo.
+- **Laravel 12**: Framework PHP de última generación.
+- **Base de datos**: Soporte listo para MySQL (configurada para el puerto `3307` por defecto).
+- **Vite & TailwindCSS v4**: Integrado para el manejo y compilación de recursos internos del backend si fuesen necesarios.
+- **Soporte de Colas (Queue)**: Configurado mediante base de datos para procesamiento asíncrono.
+- **Laravel Pail**: Herramienta de visualización interactiva de logs integrada en la consola de desarrollo.
 
 ---
 
-## ⚙️ Configuración y Configuración Inicial
+## Configuración y Configuración Inicial
 
 Para configurar este backend de manera local:
 
@@ -42,33 +42,39 @@ Para configurar este backend de manera local:
 
 ---
 
-## 💻 Comandos de Desarrollo
+## Comandos de Desarrollo
 
 En esta aplicación se han definido varios scripts rápidos en `composer.json` para facilitar el flujo de desarrollo:
 
 ### 1. Iniciar Entorno Completo en Paralelo
+
 Para no tener que abrir múltiples terminales, ejecuta:
+
 ```bash
 composer run dev
 ```
+
 Este comando utiliza `concurrently` para lanzar los siguientes procesos a la vez:
-*   **Laravel Development Server**: Servidor HTTP en `http://localhost:8000`.
-*   **Queue Listener**: Escucha y procesamiento de trabajos en segundo plano (`database` driver).
-*   **Laravel Pail**: Visualización instantánea de registros y errores en la consola.
-*   **Vite Dev Server**: Compilación rápida y HMR para recursos frontend del backend.
+
+- **Laravel Development Server**: Servidor HTTP en `http://localhost:8000`.
+- **Queue Listener**: Escucha y procesamiento de trabajos en segundo plano (`database` driver).
+- **Laravel Pail**: Visualización instantánea de registros y errores en la consola.
+- **Vite Dev Server**: Compilación rápida y HMR para recursos frontend del backend.
 
 ### 2. Ejecutar Pruebas Unitarias / Funcionales
+
 Para ejecutar la suite de pruebas mediante PHPUnit:
+
 ```bash
 composer run test
 ```
 
 ---
 
-## 📁 Directorios Clave
+## Directorios Clave
 
-*   **`app/Models/`**: Modelos Eloquent de la base de datos (por ejemplo, [User.php](file:///d:/Dev/Proyectos/test/prueba-gf/backend/app/Models/User.php)).
-*   **`app/Http/Controllers/`**: Controladores HTTP para manejar las peticiones.
-*   **`routes/`**: Rutas de la aplicación web y consola (ej. [web.php](file:///d:/Dev/Proyectos/test/prueba-gf/backend/routes/web.php)).
-*   **`database/migrations/`**: Esquema e historial de base de datos en archivos PHP.
-*   **`config/`**: Todos los archivos de configuración del framework.
+- **`app/Models/`**: Modelos Eloquent de la base de datos (por ejemplo, [User.php](file:///d:/Dev/Proyectos/test/prueba-gf/backend/app/Models/User.php)).
+- **`app/Http/Controllers/`**: Controladores HTTP para manejar las peticiones.
+- **`routes/`**: Rutas de la aplicación web y consola (ej. [web.php](file:///d:/Dev/Proyectos/test/prueba-gf/backend/routes/web.php)).
+- **`database/migrations/`**: Esquema e historial de base de datos en archivos PHP.
+- **`config/`**: Todos los archivos de configuración del framework.
