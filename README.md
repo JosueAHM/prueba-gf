@@ -1,36 +1,46 @@
-# Proyecto Prueba GF (Monorepo)
+# Proyecto Prueba GF
 
 Este es el repositorio principal para el proyecto **Prueba GF**. El proyecto está estructurado como un monorepo que contiene una aplicación backend y una aplicación frontend independientes.
 
 ---
 
-## 📂 Estructura del Repositorio
+## Estructura del Repositorio
 
 El repositorio se divide en dos directorios principales:
 
-*   **[`backend/`](file:///d:/Dev/Proyectos/test/prueba-gf/backend)**: API REST y lógica de negocio desarrollada con **Laravel 12** y **PHP 8.2+**. Utiliza **MySQL** como base de datos.
-*   **[`frontend/`](file:///d:/Dev/Proyectos/test/prueba-gf/frontend)**: Aplicación de cliente SPA (Single Page Application) desarrollada con **React 19** y compilada usando **Vite**.
+- **[`backend/`](backend/)**: API REST y lógica de negocio desarrollada con **Laravel 12** y **PHP 8.2+**. Utiliza **MySQL** como base de datos.
+- **[`frontend/`](frontend/)**: Aplicación de cliente SPA (Single Page Application) desarrollada con **React 19** y compilada usando **Vite**.
+
+Adicionalmente, se incluye un archivo de configuración **[`docker-compose.yml`](docker-compose.yml)** en la raíz para la contenedorización de servicios, el progreso/contexto UI en **[`CONTEXT.md`](CONTEXT.md)**, y un archivo de contexto de agentes de IA en **[`Agents.md`](Agents.md)**.
 
 ---
 
-## 🛠️ Requisitos Previos
+## Tecnologías Utilizadas
 
-Antes de comenzar, asegúrate de tener instalado lo siguiente en tu entorno local:
+### Backend
 
-*   **PHP 8.2** o superior
-*   **Composer** (gestor de dependencias de PHP)
-*   **Node.js** (v18.0.0 o superior) y **npm**
-*   **Servidor MySQL** (en funcionamiento en el puerto `3307` o el configurado en el archivo `.env`) o un contenedor **Docker** para la base de datos.
+- **Laravel 12** (PHP 8.2+)
+- **Base de Datos**: MySQL (Puerto configurado en 3307)
+- **Soporte asíncrono**: Cola de procesos configurada (`queue:listen`)
+- **Herramientas de dev**: Laravel Pail (logs), Pint, Vite
+
+### Frontend
+
+- **React 19** con Vite
+- **Material UI (MUI)**: Sistema de diseño y componentes (`Grid`, `Dialog`, `TextField`, etc.)
+- **Tema personalizado**: Fuente 'Outfit', bordes redondeados (16px) y colores primarios azul/púrpura.
+- **Gestión de peticiones**: Axios para conectar con la API REST.
 
 ---
 
-## 🚀 Guía de Instalación y Configuración
+## Guía de Instalación y Configuración
 
 Sigue estos pasos para configurar y levantar ambos proyectos de forma local.
 
 ### 1. Clonar el Proyecto
 
 Si aún no lo has hecho, clona este repositorio en tu máquina local:
+
 ```bash
 git clone <url-del-repositorio> prueba-gf
 cd prueba-gf
@@ -38,79 +48,82 @@ cd prueba-gf
 
 ---
 
-### 2. Configuración del Backend (Laravel)
+## Ejecución con Docker (Alternativa Recomendada)
 
-El backend de Laravel cuenta con comandos automatizados para facilitar la configuración inicial.
+Si prefieres no instalar dependencias localmente (PHP, Node.js, MySQL), el proyecto incluye una configuración completa y lista para usar con **Docker** y **Docker Compose**.
 
-1.  Accede al directorio del backend:
+1.  Asegúrate de tener Docker instalado y ejecutándose en tu sistema.
+2.  (Recomendado) Crea el archivo `.env` del backend para tener las claves de aplicación listas:
     ```bash
-    cd backend
+    cp backend/.env.example backend/.env
     ```
-2.  Crea tu archivo de entorno a partir de la plantilla (ya preconfigurado para usar la base de datos `PruebaGF` en el puerto `3307`):
+3.  Desde la raíz del proyecto, construye y levanta todos los contenedores en segundo plano:
     ```bash
-    cp .env.example .env
+    docker-compose up -d --build
     ```
-    *Nota: Si tu base de datos MySQL corre en otro puerto o con distintas credenciales, edita las variables `DB_*` en tu nuevo archivo `.env`.*
-3.  Ejecuta el script de instalación automatizado:
+4.  Genera la clave de aplicación y ejecuta las migraciones de la base de datos dentro del contenedor:
     ```bash
-    composer run setup
+    docker-compose exec backend php artisan key:generate
+    docker compose exec backend php artisan migrate:fresh --seed
     ```
-    Este comando ejecutará internamente:
-    *   `composer install` (instalación de dependencias de PHP)
-    *   Generación de la clave de aplicación (`php artisan key:generate`)
-    *   Ejecución de las migraciones de base de datos (`php artisan migrate --force`)
-    *   `npm install` y `npm run build` para la configuración de assets en el backend.
+
+**Servicios disponibles:**
+
+- **Frontend (React)**: `http://localhost:5173`
+- **Backend (Laravel API)**: `http://localhost:8000`
+- **Base de Datos (MariaDB)**: Mapeada al puerto local `3307`
+- **Queue Worker**: Procesando colas en segundo plano de forma automática.
+
+Para detener los contenedores en cualquier momento, ejecuta:
+
+```bash
+docker-compose down
+```
 
 ---
 
-### 3. Configuración del Frontend (React + Vite)
+## Ejecución Local (Sin Docker)
 
-1.  Desde la raíz del proyecto, accede al directorio del frontend:
-    ```bash
-    cd frontend
-    ```
-2.  Instala las dependencias necesarias:
-    ```bash
-    npm install
-    ```
-
----
-
-## 💻 Ejecución en Desarrollo
-
-Para trabajar en el proyecto localmente, debes iniciar ambos servidores de desarrollo:
+Si no usas Docker y prefieres trabajar en el proyecto directamente en tu entorno local, debes iniciar ambos servidores de desarrollo:
 
 ### Ejecutar el Backend (Laravel)
 
 Desde el directorio `backend/`, ejecuta:
+
 ```bash
 composer run dev
 ```
+
 Este comando utiliza `concurrently` para ejecutar en paralelo:
-*   El servidor local de Laravel (`php artisan serve` en `http://localhost:8000`)
-*   El escuchador de colas de trabajo (`php artisan queue:listen`)
-*   El visor de logs interactivo (`php artisan pail`)
-*   El compilador de assets de Vite para el backend
+
+- El servidor local de Laravel (`php artisan serve` en `http://localhost:8000`)
+- El escuchador de colas de trabajo (`php artisan queue:listen`)
+- El visor de logs interactivo (`php artisan pail`)
+- El compilador de assets de Vite para el backend
 
 ### Ejecutar el Frontend (React + Vite)
 
 Desde el directorio `frontend/`, ejecuta:
+
 ```bash
 npm run dev
 ```
+
 La aplicación web estará disponible en la URL indicada por la consola (normalmente `http://localhost:5173`).
 
 ---
 
-## 📝 Scripts Disponibles
+## Scripts Disponibles y Comandos Útiles
 
 ### Backend (`/backend`)
-*   `composer run setup`: Instalación y configuración inicial completa.
-*   `composer run dev`: Servidor, cola de procesos, visor de logs y Vite corriendo en paralelo.
-*   `composer run test`: Ejecuta los tests automatizados mediante PHPUnit.
+
+- `composer run setup`: Instalación y configuración inicial completa.
+- `composer run dev`: Servidor, cola de procesos, visor de logs y Vite corriendo en paralelo.
+- `composer run test`: Ejecuta los tests automatizados mediante PHPUnit.
 
 ### Frontend (`/frontend`)
-*   `npm run dev`: Inicia el servidor de desarrollo de Vite con soporte para HMR (Hot Module Replacement).
-*   `npm run build`: Compila la aplicación de React para producción en la carpeta `dist`.
-*   `npm run lint`: Ejecuta el analizador de código ESLint para comprobar el estilo y errores en el código de React.
-*   `npm run preview`: Previsualiza localmente la compilación de producción.
+
+- `npm run dev`: Inicia el servidor de desarrollo de Vite con soporte para HMR (Hot Module Replacement).
+- `npm run build`: Compila la aplicación de React para producción en la carpeta `dist`.
+- `npm run lint`: Ejecuta el analizador de código ESLint para comprobar el estilo y errores en el código de React.
+- `npm run preview`: Previsualiza localmente la compilación de producción.
